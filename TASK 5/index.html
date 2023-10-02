@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            border: 2px solid #333;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 400px;
+            border-radius: 10px;
+            background-color: #f5f254;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #timer {
+            font-size: 48px;
+            margin: 20px;
+            color: #333;
+        }
+
+        .input-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-container label {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .input-container input[type="number"] {
+            font-size: 18px;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .input-container select {
+            font-size: 18px;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Countdown Timer</h1>
+        <div id="timer">00:00.000</div>
+        
+        <div class="input-container">
+            <label>Set Time:</label>
+            <input type="number" id="timeInput" min="1" placeholder="Enter time">
+            <select id="unit">
+                <option value="minutes">Minutes</option>
+                <option value="seconds">Seconds</option>
+            </select>
+        </div>
+
+        <div class="btn-container">
+            <button id="start">Start</button>
+            <button id="stop" disabled>Stop</button>
+            <button id="reset" disabled>Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let timerInterval;
+        let timeRemaining = 0;
+        let isRunning = false;
+
+        const timerDisplay = document.getElementById('timer');
+        const startButton = document.getElementById('start');
+        const stopButton = document.getElementById('stop');
+        const resetButton = document.getElementById('reset');
+        const timeInput = document.getElementById('timeInput');
+        const unitSelect = document.getElementById('unit');
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                startButton.disabled = true;
+                stopButton.disabled = false;
+                resetButton.disabled = true;
+
+                const selectedUnit = unitSelect.value;
+                const inputValue = parseInt(timeInput.value);
+
+                if (selectedUnit === 'minutes') {
+                    timeRemaining = inputValue * 60 * 1000;
+                } else {
+                    timeRemaining = inputValue * 1000;
+                }
+
+                timerInterval = setInterval(updateTimer, 10); // Update every 10 milliseconds for milliseconds display
+            }
+        }
+
+        function stopTimer() {
+            if (isRunning) {
+                isRunning = false;
+                startButton.disabled = false;
+                stopButton.disabled = true;
+                resetButton.disabled = false;
+
+                clearInterval(timerInterval);
+            }
+        }
+
+        function resetTimer() {
+            stopTimer();
+            timeRemaining = 0;
+            updateTimerDisplay();
+        }
+
+        function updateTimer() {
+            if (timeRemaining > 0) {
+                timeRemaining -= 10; // Subtract 10 milliseconds
+                updateTimerDisplay();
+            } else {
+                stopTimer();
+            }
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60000);
+            const seconds = Math.floor((timeRemaining % 60000) / 1000);
+            const milliseconds = timeRemaining % 1000;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+        }
+
+        startButton.addEventListener('click', startTimer);
+        stopButton.addEventListener('click', stopTimer);
+        resetButton.addEventListener('click', resetTimer);
+    </script>
+</body>
+</html>
