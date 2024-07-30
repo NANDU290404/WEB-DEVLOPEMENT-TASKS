@@ -1,4 +1,3 @@
-# TECHNOHACKS
 My internship tasks in web development
 
 # Task 5 : Develop a countdown timer
